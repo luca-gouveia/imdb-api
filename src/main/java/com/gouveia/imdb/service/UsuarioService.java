@@ -1,39 +1,25 @@
 package com.gouveia.imdb.service;
 
-import com.gouveia.imdb.dto.RegistroUsuarioDTO;
+import com.gouveia.imdb.dto.UsuarioDTO;
 import com.gouveia.imdb.model.Usuario;
 import com.gouveia.imdb.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
-public class UsuarioService implements UserDetailsService {
+public class UsuarioService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usuarioRepository.findByEmail(username);
+    public List<UsuarioDTO> recuperarTodos() {
+        return usuarioRepository.findAllByAtivo(true);
     }
 
-    public ResponseEntity registrarUsuario(RegistroUsuarioDTO usuario) {
-        var hasUsuario = this.usuarioRepository.findByEmail(usuario.email()) != null;
-
-        if(hasUsuario) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        String senhaCriptografada = new BCryptPasswordEncoder().encode(usuario.senha());
-        Usuario novoUsuario = new Usuario(usuario.nome(), usuario.email(), senhaCriptografada);
-
-        this.usuarioRepository.save(novoUsuario);
-
-        return ResponseEntity.ok().build();
+    public void desativarUsuario(String email) {
+        Optional<Usuario> usuario = usuarioRepository.getByEmail(email);
+        usuario.ifPresent(value -> usuarioRepository.delete(value));
     }
 }

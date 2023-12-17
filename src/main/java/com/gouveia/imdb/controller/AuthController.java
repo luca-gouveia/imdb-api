@@ -43,7 +43,6 @@ public class AuthController {
     }
 
     @PostMapping("/registrar")
-    @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity autenticarUsuario(@RequestBody @Validated RegistroUsuarioDTO usuario) throws Exception {
         return authService.registrarUsuario(usuario);
     }
