@@ -41,7 +41,7 @@ public class Usuario implements UserDetails {
     private String senha;
     @Column(nullable = false, length = 50)
     private String nome;
-    @Column
+    @Column(nullable = false)
     private Boolean ativo = true;
     @Column
     @Enumerated(EnumType.STRING)
@@ -66,6 +66,7 @@ public class Usuario implements UserDetails {
 
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
+
     @Override
     public String getPassword() {
         return this.senha;

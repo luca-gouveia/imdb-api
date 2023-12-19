@@ -2,6 +2,7 @@ package com.gouveia.imdb.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,7 +27,10 @@ public class Avaliacao {
     private Long id;
     @Column
     private Integer nota;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_catalogo_id")
-    private ItemCatalogo itemCatalogo;
+    private CatalogoItem catalogoItem;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 }

@@ -28,10 +28,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/registrar").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/product").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                        .requestMatchers("/usuarios").hasRole("ADMIN")
+                        .requestMatchers("/catalogo").hasRole("ADMIN")
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(securityFilterConfig, UsernamePasswordAuthenticationFilter.class)
                 .build();

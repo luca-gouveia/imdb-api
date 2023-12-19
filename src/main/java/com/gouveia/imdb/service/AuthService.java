@@ -1,10 +1,19 @@
 package com.gouveia.imdb.service;
 
+import com.gouveia.imdb.config.JWTConfig;
+import com.gouveia.imdb.dto.AuthDTO;
+import com.gouveia.imdb.dto.AuthResponseDTO;
 import com.gouveia.imdb.dto.RegistroUsuarioDTO;
+import com.gouveia.imdb.dto.UsuarioDTO;
+import com.gouveia.imdb.exceptions.NotFoundErrorException;
 import com.gouveia.imdb.model.Usuario;
 import com.gouveia.imdb.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,24 +25,23 @@ public class AuthService implements UserDetailsService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return usuarioRepository.findByEmail(username);
     }
 
-    public ResponseEntity registrarUsuario(RegistroUsuarioDTO usuario) {
+    public ResponseEntity<UsuarioDTO> registrarUsuario(RegistroUsuarioDTO usuario) {
         var hasUsuario = this.usuarioRepository.findByEmail(usuario.email()) != null;
 
         if(hasUsuario) {
-            return ResponseEntity.badRequest().build();
+            throw new NotFoundErrorException("Usuário já cadastrado!");
         }
 
         String senhaCriptografada = new BCryptPasswordEncoder().encode(usuario.senha());
         Usuario novoUsuario = new Usuario(usuario.nome(), usuario.email(), senhaCriptografada);
 
-        this.usuarioRepository.save(novoUsuario);
+        var usuarioNovo = this.usuarioRepository.save(novoUsuario);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(new UsuarioDTO(usuarioNovo.getId(), usuarioNovo.getNome(), usuarioNovo.getEmail(), usuarioNovo.getRole()));
     }
 }
