@@ -2,14 +2,11 @@ package com.gouveia.imdb.controller;
 
 import com.gouveia.imdb.dto.UsuarioDTO;
 import com.gouveia.imdb.dto.UsuarioRequestDTO;
-import com.gouveia.imdb.model.Usuario;
 import com.gouveia.imdb.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios")

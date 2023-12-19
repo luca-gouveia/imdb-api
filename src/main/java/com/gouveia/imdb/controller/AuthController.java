@@ -48,7 +48,7 @@ public class AuthController {
     }
 
     @PostMapping("/registrar")
-    public ResponseEntity<UsuarioDTO> autenticarUsuario(@RequestBody @Validated RegistroUsuarioDTO registroUsuarioDTO) {
+    public ResponseEntity<UsuarioDTO> registrar(@RequestBody @Validated RegistroUsuarioDTO registroUsuarioDTO) {
         return authService.registrarUsuario(registroUsuarioDTO);
     }
 }
