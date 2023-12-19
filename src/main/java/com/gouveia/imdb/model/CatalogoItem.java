@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.Date;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CatalogoItem {
+public class CatalogoItem extends RepresentationModel<CatalogoItem> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

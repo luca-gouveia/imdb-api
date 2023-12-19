@@ -4,6 +4,8 @@ import com.gouveia.imdb.dto.UsuarioDTO;
 import com.gouveia.imdb.model.Usuario;
 import com.gouveia.imdb.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,8 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -22,17 +26,39 @@ public class UsuarioController {
     UsuarioService usuarioService;
 
     @GetMapping
-    public List<UsuarioDTO> recuperarTodos() {
-        return usuarioService.recuperarTodos();
+    public ResponseEntity<List<UsuarioDTO>> recuperarTodos() {
+        var usuarios = usuarioService.recuperarTodos();
+
+        for(UsuarioDTO usuario : usuarios) {
+            Long id = usuario.getId();
+
+            usuario.add(linkTo(methodOn(UsuarioController.class).recuperarPorId(usuario.getId())).withSelfRel());
+        }
+
+        return new ResponseEntity<List<UsuarioDTO>>(usuarios, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> recuperarPorId(@PathVariable("id") String id) {
-        return usuarioService.recuperarPorId(id);
+    public ResponseEntity<UsuarioDTO> recuperarPorId(@PathVariable("id") Long id) {
+        var usuario =  usuarioService.recuperarPorId(id);
+
+        if (usuario != null) {
+            usuario.add(linkTo(methodOn(UsuarioController.class).recuperarTodos()).withRel(IanaLinkRelations.COLLECTION));
+
+            return ResponseEntity.ok(usuario);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> desativar(@PathVariable("id") Long id) {
-        return usuarioService.desativarUsuario(id);
+        var isDesativado =  usuarioService.desativarUsuario(id);
+
+        if (isDesativado) {
+            return ResponseEntity.ok().body("Usuário removido!");
+        } else {
+            throw new RuntimeException("Não foi possível desativar o usuário");
+        }
     }
 }

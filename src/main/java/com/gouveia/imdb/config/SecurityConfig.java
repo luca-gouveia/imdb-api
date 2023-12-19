@@ -24,11 +24,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return  httpSecurity
+        return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/usuarios").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/usuarios/**").hasRole("ADMIN")
                         .requestMatchers("/catalogo").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )

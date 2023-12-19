@@ -31,13 +31,8 @@ public class CatalogoControlller {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public void criarAnuncio(@RequestBody CatalogoItemDTO catalogoItemDTO) throws IOException {
+    public void criarTitulo(@RequestBody CatalogoItemDTO catalogoItemDTO) {
         catalogoService.salvar(catalogoItemDTO);
-    }
-
-    @GetMapping
-    public ResponseEntity criarAnuncio() {
-        return ResponseEntity.ok("ok");
     }
 
     @GetMapping("/buscar")
