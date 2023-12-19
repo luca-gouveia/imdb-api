@@ -1,9 +1,10 @@
 # imdb-api
 
 # usuario
- - deletar
- - recuperar todos
- - editar
+ - deletar #
+ - recuperar todos #
+ - recuperar unico #
+ - editar #
 
 # titulos
  - Cadastrar - A

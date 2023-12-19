@@ -1,6 +1,7 @@
 package com.gouveia.imdb.controller;
 
 import com.gouveia.imdb.dto.UsuarioDTO;
+import com.gouveia.imdb.dto.UsuarioRequestDTO;
 import com.gouveia.imdb.model.Usuario;
 import com.gouveia.imdb.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +9,12 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -59,6 +63,17 @@ public class UsuarioController {
             return ResponseEntity.ok().body("Usuário removido!");
         } else {
             throw new RuntimeException("Não foi possível desativar o usuário");
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioDTO> editar(@PathVariable("id") Long id, @RequestBody UsuarioRequestDTO usuarioRequestDTO) {
+        var usuario =  usuarioService.editar(id, usuarioRequestDTO);
+
+        if (usuario != null) {
+            return ResponseEntity.ok().body(usuario);
+        } else {
+            throw new RuntimeException("Não foi editar o usuário");
         }
     }
 }

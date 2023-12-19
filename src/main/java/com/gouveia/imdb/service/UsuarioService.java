@@ -5,6 +5,7 @@ import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.met
 
 import com.gouveia.imdb.controller.UsuarioController;
 import com.gouveia.imdb.dto.UsuarioDTO;
+import com.gouveia.imdb.dto.UsuarioRequestDTO;
 import com.gouveia.imdb.model.Usuario;
 import com.gouveia.imdb.repository.UsuarioRepository;
 import org.modelmapper.ModelMapper;
@@ -54,5 +55,21 @@ public class UsuarioService {
         }
 
         return null;
+    }
+
+    public UsuarioDTO editar(Long id, UsuarioRequestDTO usuarioRequestDTO) {
+        var usuario = usuarioRepository.findById(id);
+
+        if (usuario.isEmpty()) {
+            return null;
+        }
+
+        Usuario usuarioRecuperado = usuario.get();
+        usuarioRecuperado.setNome(usuarioRequestDTO.nome());
+        usuarioRecuperado.setEmail(usuarioRequestDTO.email());
+
+        usuarioRepository.save(usuarioRecuperado);
+
+        return modelMapper.map(usuarioRecuperado, UsuarioDTO.class);
     }
 }
