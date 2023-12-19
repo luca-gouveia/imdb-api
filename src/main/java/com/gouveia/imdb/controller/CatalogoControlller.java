@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,6 +78,17 @@ public class CatalogoControlller {
             return ResponseEntity.ok(item);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletar(@PathVariable("id") Long id) {
+        var isDeletado =  catalogoService.deletar(id);
+
+        if (isDeletado) {
+            return ResponseEntity.ok().body("título removido!");
+        } else {
+            throw new RuntimeException("Não foi possível remover");
         }
     }
 }

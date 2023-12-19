@@ -69,6 +69,17 @@ public class CatalogoService {
         return itensListaDTO;
     }
 
+    public Boolean deletar(Long id) {
+        Optional<CatalogoItem> catalogoItem = catalogoRepository.findById(id);
+
+        if (catalogoItem.isPresent()) {
+            catalogoRepository.delete(catalogoItem.get());
+            return true;
+        }
+
+        return false;
+    }
+
     public CatalogoItemResponseDTO recuperarPorId(Long id) {
         var itemOptional = catalogoRepository.findById(id);
         var usuarioLogado = SecurityContextHolder.getContext().getAuthentication()
