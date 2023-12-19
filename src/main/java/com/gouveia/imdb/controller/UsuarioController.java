@@ -34,8 +34,6 @@ public class UsuarioController {
         var usuarios = usuarioService.recuperarTodos();
 
         for(UsuarioDTO usuario : usuarios) {
-            Long id = usuario.getId();
-
             usuario.add(linkTo(methodOn(UsuarioController.class).recuperarPorId(usuario.getId())).withSelfRel());
         }
 

@@ -1,9 +1,5 @@
 package com.gouveia.imdb.service;
 
-import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.reactive.WebFluxLinkBuilder.methodOn;
-
-import com.gouveia.imdb.controller.UsuarioController;
 import com.gouveia.imdb.dto.UsuarioDTO;
 import com.gouveia.imdb.dto.UsuarioRequestDTO;
 import com.gouveia.imdb.model.Usuario;
@@ -28,7 +24,7 @@ public class UsuarioService {
         var usuarios = usuarioRepository.findAllByAtivo(true);
         var usuariosDTO = new ArrayList<UsuarioDTO>();
 
-        for(Usuario usuario : usuarios) {
+        for (Usuario usuario : usuarios) {
             usuariosDTO.add(modelMapper.map(usuario, UsuarioDTO.class));
         }
 

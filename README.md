@@ -7,12 +7,12 @@
  - editar #
 
 # titulos
- - Cadastrar - A
- - recuperar unico (com avaliacoes)
+ - Cadastrar - A #
+ - recuperar unico (com avaliacoes) #
  - recuperar todos por filtro (genero | diretor | atores)
  - deletar - A
- - Avaliar
+ - Avaliar #
 
 # Auth
-- Criar
- - logar
+- Criar #
+ - logar #
