@@ -3,6 +3,7 @@ package com.gouveia.imdb.controller;
 import com.gouveia.imdb.dto.AvaliacaoDTO;
 import com.gouveia.imdb.dto.CatalogoItemDTO;
 import com.gouveia.imdb.dto.CatalogoItemResponseDTO;
+import com.gouveia.imdb.enums.Genero;
 import com.gouveia.imdb.service.CatalogoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -49,6 +52,19 @@ public class CatalogoControlller {
         }
 
         return new ResponseEntity<List<CatalogoItemResponseDTO>>(itens, HttpStatus.OK);
+    }
+
+    @GetMapping("/generos")
+    public ResponseEntity<?> recuperarGeneros() {
+        var generos = Genero.values();
+
+        List<String> generosNome = Arrays.stream(generos)
+                .map(Genero::getDescricao).toList();
+
+        var mapSaida = new HashMap<String, List<String>>();
+        mapSaida.put("generos", generosNome);
+
+        return new ResponseEntity<Object>(mapSaida, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

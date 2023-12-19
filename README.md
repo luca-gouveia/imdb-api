@@ -12,6 +12,8 @@
  - recuperar todos por filtro (genero | diretor | atores)
  - deletar - A
  - Avaliar #
+ - ### genero
+ - recuperar generos
 
 # Auth
 - Criar #

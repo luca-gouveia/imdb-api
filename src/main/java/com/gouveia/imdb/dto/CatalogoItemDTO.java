@@ -1,4 +1,6 @@
 package com.gouveia.imdb.dto;
 
-public record CatalogoItemDTO(String titulo, String genero, String diretor, String atores, String descricao, String imdbID) {
+import java.util.List;
+
+public record CatalogoItemDTO(String titulo, List<String> genero, String diretor, String atores, String descricao, String imdbID) {
 }

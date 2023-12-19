@@ -3,6 +3,7 @@ package com.gouveia.imdb.service;
 import com.gouveia.imdb.dto.AvaliacaoDTO;
 import com.gouveia.imdb.dto.CatalogoItemDTO;
 import com.gouveia.imdb.dto.CatalogoItemResponseDTO;
+import com.gouveia.imdb.enums.Genero;
 import com.gouveia.imdb.model.Avaliacao;
 import com.gouveia.imdb.model.CatalogoItem;
 import com.gouveia.imdb.model.Usuario;
@@ -35,6 +36,14 @@ public class CatalogoService {
     ModelMapper modelMapper;
 
     public void salvar(CatalogoItemDTO catalogoItemDTO) {
+        List<Genero> generos = new ArrayList<>();
+
+        if (!catalogoItemDTO.genero().isEmpty()) {
+            for (String generoString : catalogoItemDTO.genero()) {
+                generos.add(Genero.recuperarEnumPorDescricao(generoString));
+            }
+
+        }
 
         var catalogoItem = CatalogoItem.builder()
                 .titulo(catalogoItemDTO.titulo())
@@ -42,6 +51,7 @@ public class CatalogoService {
                 .diretor(catalogoItemDTO.diretor())
                 .atores(catalogoItemDTO.atores())
                 .imdbID(catalogoItemDTO.imdbID())
+                .genero(generos)
                 .ativo(true)
                 .build();
 

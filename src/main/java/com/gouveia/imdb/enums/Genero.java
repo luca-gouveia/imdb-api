@@ -34,4 +34,12 @@ public enum Genero {
     THRILLER("Thriller");
 
     private String descricao;
+
+    public static Genero recuperarEnumPorDescricao(String code){
+        for(Genero e : Genero.values()){
+            if(e.descricao.equals(code)) return e;
+        }
+        return null;
+    }
+
 }

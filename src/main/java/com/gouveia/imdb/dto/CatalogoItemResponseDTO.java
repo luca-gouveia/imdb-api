@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -16,7 +17,7 @@ import java.util.List;
 public class CatalogoItemResponseDTO extends RepresentationModel<CatalogoItemResponseDTO> {
     private Long id;
     private String titulo;
-    private List<Genero> genero;
+    private List<String> genero;
     private String linkImagem;
     private String descricao;
     private String diretor;
@@ -24,4 +25,18 @@ public class CatalogoItemResponseDTO extends RepresentationModel<CatalogoItemRes
     private String imdbID;
     private double avaliacao;
     private boolean isAvaliado;
+
+    public List<String> getGenero() {
+        if (genero!= null && !genero.isEmpty()) {
+            List<String> listaDescricaoGenero = new ArrayList<>();
+
+            for (String generoDescricao : genero) {
+                listaDescricaoGenero.add(Genero.valueOf(generoDescricao).getDescricao());
+            }
+
+            genero = listaDescricaoGenero;
+        }
+
+        return genero;
+    }
 }
