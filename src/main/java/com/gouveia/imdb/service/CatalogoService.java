@@ -174,8 +174,6 @@ public class CatalogoService {
     }
 
     public Page<CatalogoItemResponseDTO> buscar(BuscaDTO buscaDTO, Pageable pageable) {
-        List<Genero> generoEnum = null;
-
         var catalogoItemPage = catalogoRepository.buscar(buscaDTO.titulo(), buscaDTO.diretor(), buscaDTO.atores(), pageable);
         var itensListaDTO = new ArrayList<CatalogoItemResponseDTO>();
         var catalogoItens = catalogoItemPage.getContent();
