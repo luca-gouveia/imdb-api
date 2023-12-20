@@ -100,6 +100,10 @@ public class CatalogoService {
 
     public CatalogoItemResponseDTO recuperarPorId(Long id) {
         var itemOptional = catalogoRepository.findById(id);
+        return itemOptional.map(this::getCatalogoItemResponseDTO).orElse(null);
+    }
+
+    public CatalogoItemResponseDTO getCatalogoItemResponseDTO(CatalogoItem catalogoItem) {
         var usuarioLogado = SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
 
@@ -107,21 +111,16 @@ public class CatalogoService {
             usuarioLogado = null;
         }
 
-        if (itemOptional.isPresent()) {
-            var item = itemOptional.get();
-            var notaMedia = this.calcularMediaAvaliacao(itemOptional.get().getId());
+        var notaMedia = this.calcularMediaAvaliacao(catalogoItem.getId());
 
-            var isAvaliado = usuarioLogado != null && this.verificaSeUsuarioJaAvaliou(itemOptional.get().getId(), ((Usuario) usuarioLogado).getId());
+        var isAvaliado = usuarioLogado != null && this.verificaSeUsuarioJaAvaliou(catalogoItem.getId(), ((Usuario) usuarioLogado).getId());
 
-            CatalogoItemResponseDTO catalogoItem = modelMapper.map(item, CatalogoItemResponseDTO.class);
+        CatalogoItemResponseDTO catalogoItemResponseDTO = modelMapper.map(catalogoItem, CatalogoItemResponseDTO.class);
 
-            catalogoItem.setAvaliacao(notaMedia);
-            catalogoItem.setAvaliado(isAvaliado);
+        catalogoItemResponseDTO.setAvaliacao(notaMedia);
+        catalogoItemResponseDTO.setAvaliado(isAvaliado);
 
-            return catalogoItem;
-        }
-
-        return null;
+        return catalogoItemResponseDTO;
     }
 
     public boolean verificaSeUsuarioJaAvaliou(Long catalogoItemId, Long usuarioId) {
