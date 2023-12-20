@@ -1,6 +1,7 @@
 package com.gouveia.imdb.controller;
 
 import com.gouveia.imdb.dto.AvaliacaoDTO;
+import com.gouveia.imdb.dto.BuscaDTO;
 import com.gouveia.imdb.dto.CatalogoItemDTO;
 import com.gouveia.imdb.dto.CatalogoItemResponseDTO;
 import com.gouveia.imdb.dto.GeneroDTO;
@@ -59,6 +60,17 @@ public class CatalogoControlller {
         return new ResponseEntity<Page<CatalogoItemResponseDTO>>(itens, HttpStatus.OK);
     }
 
+    @GetMapping("/buscar")
+    public ResponseEntity<Page<CatalogoItemResponseDTO>> buscar(@RequestBody BuscaDTO buscaDTO, @PageableDefault(value = 50) Pageable pageable) {
+        var itens = catalogoService.buscar(buscaDTO, pageable);
+
+        for (CatalogoItemResponseDTO catalogoItemResponseDTO : itens) {
+            catalogoItemResponseDTO.add(linkTo(methodOn(CatalogoControlller.class).recuperarPorId(catalogoItemResponseDTO.getId())).withSelfRel());
+        }
+
+        return new ResponseEntity<Page<CatalogoItemResponseDTO>>(itens, HttpStatus.OK);
+    }
+
     @GetMapping("/generos")
     public ResponseEntity<GeneroDTO> recuperarGeneros() {
         var generos = Genero.values();
@@ -86,7 +98,7 @@ public class CatalogoControlller {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletar(@PathVariable("id") Long id) {
-        var isDeletado =  catalogoService.deletar(id);
+        var isDeletado = catalogoService.deletar(id);
 
         if (isDeletado) {
             return ResponseEntity.ok().body("título removido!");

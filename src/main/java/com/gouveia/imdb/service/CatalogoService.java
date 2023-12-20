@@ -1,6 +1,7 @@
 package com.gouveia.imdb.service;
 
 import com.gouveia.imdb.dto.AvaliacaoDTO;
+import com.gouveia.imdb.dto.BuscaDTO;
 import com.gouveia.imdb.dto.CatalogoItemDTO;
 import com.gouveia.imdb.dto.CatalogoItemResponseDTO;
 import com.gouveia.imdb.enums.Genero;
@@ -20,6 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,14 +70,14 @@ public class CatalogoService {
         var itensListaDTO = new ArrayList<CatalogoItemResponseDTO>();
 
         return new PageImpl<CatalogoItemResponseDTO>(
-                this.converterEmCatalogoItemResponseDTO(catalogoItemPage, itensListaDTO),
+                this.converterEmCatalogoItemResponseDTO(catalogoItemPage.getContent(), itensListaDTO),
                 pageable,
                 catalogoItemPage.getTotalElements()
         );
     }
 
-    private List<CatalogoItemResponseDTO> converterEmCatalogoItemResponseDTO(Page<CatalogoItem> itens, ArrayList<CatalogoItemResponseDTO> itensListaDTO) {
-        for (CatalogoItem catalogoItem : itens.getContent()) {
+    private List<CatalogoItemResponseDTO> converterEmCatalogoItemResponseDTO(List<CatalogoItem> itens, ArrayList<CatalogoItemResponseDTO> itensListaDTO) {
+        for (CatalogoItem catalogoItem : itens) {
             itensListaDTO.add(modelMapper.map(catalogoItem, CatalogoItemResponseDTO.class));
         }
 
@@ -118,7 +122,7 @@ public class CatalogoService {
     }
 
     public boolean verificaSeUsuarioJaAvaliou(Long catalogoItemId, Long usuarioId) {
-        List<Avaliacao> avaliacaoDTOS = avaliacaoRepository.findAllByCatalogoItemIdAndUsuarioId(catalogoItemId,usuarioId);
+        List<Avaliacao> avaliacaoDTOS = avaliacaoRepository.findAllByCatalogoItemIdAndUsuarioId(catalogoItemId, usuarioId);
         return !avaliacaoDTOS.isEmpty();
     }
 
@@ -126,11 +130,11 @@ public class CatalogoService {
         List<Avaliacao> avaliacaoDTOS = avaliacaoRepository.findAllByCatalogoItemId(catalogoItemId);
 
         if (!avaliacaoDTOS.isEmpty()) {
-           var notaMediaOpt = avaliacaoDTOS.stream()
+            var notaMediaOpt = avaliacaoDTOS.stream()
                     .mapToDouble(Avaliacao::getNota)
                     .average();
 
-           return notaMediaOpt.isPresent() ? notaMediaOpt.getAsDouble() : 0;
+            return notaMediaOpt.isPresent() ? notaMediaOpt.getAsDouble() : 0;
         }
 
         return 0;
@@ -139,7 +143,7 @@ public class CatalogoService {
     @Transactional
     public void avaliar(AvaliacaoDTO avaliacaoDTO) {
 
-        var notasValidas = List.of(1,2,3,4);
+        var notasValidas = List.of(1, 2, 3, 4);
         var nota = avaliacaoDTO.nota();
 
         var usuarioLogado = (Usuario) SecurityContextHolder.getContext().getAuthentication()
@@ -167,5 +171,27 @@ public class CatalogoService {
                 .build();
 
         avaliacaoRepository.save(avaliacao);
+    }
+
+    public Page<CatalogoItemResponseDTO> buscar(BuscaDTO buscaDTO, Pageable pageable) {
+        List<Genero> generoEnum = null;
+
+        var catalogoItemPage = catalogoRepository.buscar(buscaDTO.titulo(), buscaDTO.diretor(), buscaDTO.atores(), pageable);
+        var itensListaDTO = new ArrayList<CatalogoItemResponseDTO>();
+        var catalogoItens = catalogoItemPage.getContent();
+
+        if (!buscaDTO.genero().isEmpty()) {
+            var genero = Genero.recuperarEnumPorDescricao(buscaDTO.genero());
+
+            catalogoItens = catalogoItens
+                    .stream()
+                    .filter(catalogoItem -> catalogoItem.getGenero().contains(genero)).toList();
+        }
+
+        return new PageImpl<CatalogoItemResponseDTO>(
+                this.converterEmCatalogoItemResponseDTO(catalogoItens, itensListaDTO),
+                pageable,
+                catalogoItemPage.getTotalElements()
+        );
     }
 }
