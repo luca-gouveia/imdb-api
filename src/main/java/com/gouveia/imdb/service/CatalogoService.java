@@ -77,8 +77,15 @@ public class CatalogoService {
     }
 
     private List<CatalogoItemResponseDTO> converterEmCatalogoItemResponseDTO(List<CatalogoItem> itens, ArrayList<CatalogoItemResponseDTO> itensListaDTO) {
+        var usuarioLogado = SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
+            usuarioLogado = null;
+        }
+
         for (CatalogoItem catalogoItem : itens) {
-            var catalogoItemDto = getCatalogoItemResponseDTO(catalogoItem);
+            var catalogoItemDto = getCatalogoItemResponseDTO(catalogoItem, usuarioLogado);
             itensListaDTO.add(catalogoItemDto);
         }
 
@@ -98,10 +105,7 @@ public class CatalogoService {
 
     public CatalogoItemResponseDTO recuperarPorId(Long id) {
         var itemOptional = catalogoRepository.findById(id);
-        return itemOptional.map(this::getCatalogoItemResponseDTO).orElse(null);
-    }
 
-    public CatalogoItemResponseDTO getCatalogoItemResponseDTO(CatalogoItem catalogoItem) {
         var usuarioLogado = SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
 
@@ -109,6 +113,12 @@ public class CatalogoService {
             usuarioLogado = null;
         }
 
+        Object finalUsuarioLogado = usuarioLogado;
+
+        return itemOptional.map(catalogoItem -> getCatalogoItemResponseDTO(catalogoItem, finalUsuarioLogado)).orElse(null);
+    }
+
+    public CatalogoItemResponseDTO getCatalogoItemResponseDTO(CatalogoItem catalogoItem, Object usuarioLogado) {
         var notaMedia = this.calcularMediaAvaliacao(catalogoItem.getId());
 
         var isAvaliado = usuarioLogado != null && this.verificaSeUsuarioJaAvaliou(catalogoItem.getId(), ((Usuario) usuarioLogado).getId());
