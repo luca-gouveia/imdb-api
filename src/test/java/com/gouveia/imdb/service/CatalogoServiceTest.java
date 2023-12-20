@@ -33,4 +33,6 @@ class CatalogoServiceTest {
 
         assertFalse(catalogoItemResponseDTO.isAvaliado());
     }
+//    TODO: Criar mais testes depois
+
 }
