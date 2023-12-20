@@ -13,6 +13,9 @@ import com.gouveia.imdb.repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -58,11 +61,19 @@ public class CatalogoService {
         catalogoRepository.save(catalogoItem);
     }
 
-    public List<CatalogoItemResponseDTO> recuperarTodos() {
-        var itens = catalogoRepository.findAll();
+    public Page<CatalogoItemResponseDTO> recuperarTodos(Pageable pageable) {
+        var catalogoItemPage = catalogoRepository.findAll(pageable);
         var itensListaDTO = new ArrayList<CatalogoItemResponseDTO>();
 
-        for (CatalogoItem catalogoItem : itens) {
+        return new PageImpl<CatalogoItemResponseDTO>(
+                this.converterEmCatalogoItemResponseDTO(catalogoItemPage, itensListaDTO),
+                pageable,
+                catalogoItemPage.getTotalElements()
+        );
+    }
+
+    private List<CatalogoItemResponseDTO> converterEmCatalogoItemResponseDTO(Page<CatalogoItem> itens, ArrayList<CatalogoItemResponseDTO> itensListaDTO) {
+        for (CatalogoItem catalogoItem : itens.getContent()) {
             itensListaDTO.add(modelMapper.map(catalogoItem, CatalogoItemResponseDTO.class));
         }
 

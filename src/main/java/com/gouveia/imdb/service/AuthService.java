@@ -1,8 +1,5 @@
 package com.gouveia.imdb.service;
 
-import com.gouveia.imdb.config.JWTConfig;
-import com.gouveia.imdb.dto.AuthDTO;
-import com.gouveia.imdb.dto.AuthResponseDTO;
 import com.gouveia.imdb.dto.RegistroUsuarioDTO;
 import com.gouveia.imdb.dto.UsuarioDTO;
 import com.gouveia.imdb.exceptions.NotFoundErrorException;
@@ -11,9 +8,6 @@ import com.gouveia.imdb.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

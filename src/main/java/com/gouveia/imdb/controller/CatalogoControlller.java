@@ -3,9 +3,13 @@ package com.gouveia.imdb.controller;
 import com.gouveia.imdb.dto.AvaliacaoDTO;
 import com.gouveia.imdb.dto.CatalogoItemDTO;
 import com.gouveia.imdb.dto.CatalogoItemResponseDTO;
+import com.gouveia.imdb.dto.GeneroDTO;
 import com.gouveia.imdb.enums.Genero;
 import com.gouveia.imdb.service.CatalogoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,27 +49,26 @@ public class CatalogoControlller {
     }
 
     @GetMapping
-    public ResponseEntity<List<CatalogoItemResponseDTO>> recuperarTodos() {
-        var itens = catalogoService.recuperarTodos();
+    public ResponseEntity<Page<CatalogoItemResponseDTO>> recuperarTodos(@PageableDefault(value = 50) Pageable pageable) {
+        var itens = catalogoService.recuperarTodos(pageable);
 
         for (CatalogoItemResponseDTO catalogoItemResponseDTO : itens) {
             catalogoItemResponseDTO.add(linkTo(methodOn(CatalogoControlller.class).recuperarPorId(catalogoItemResponseDTO.getId())).withSelfRel());
         }
 
-        return new ResponseEntity<List<CatalogoItemResponseDTO>>(itens, HttpStatus.OK);
+        return new ResponseEntity<Page<CatalogoItemResponseDTO>>(itens, HttpStatus.OK);
     }
 
     @GetMapping("/generos")
-    public ResponseEntity<?> recuperarGeneros() {
+    public ResponseEntity<GeneroDTO> recuperarGeneros() {
         var generos = Genero.values();
 
         List<String> generosNome = Arrays.stream(generos)
                 .map(Genero::getDescricao).toList();
 
-        var mapSaida = new HashMap<String, List<String>>();
-        mapSaida.put("generos", generosNome);
+        GeneroDTO generoDTO = new GeneroDTO(generosNome);
 
-        return new ResponseEntity<Object>(mapSaida, HttpStatus.OK);
+        return new ResponseEntity<GeneroDTO>(generoDTO, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -73,7 +76,7 @@ public class CatalogoControlller {
         var item = catalogoService.recuperarPorId(id);
 
         if (item != null) {
-            item.add(linkTo(methodOn(CatalogoControlller.class).recuperarTodos()).withRel(IanaLinkRelations.COLLECTION));
+            item.add(linkTo(methodOn(CatalogoControlller.class).recuperarTodos(null)).withRel(IanaLinkRelations.COLLECTION));
 
             return ResponseEntity.ok(item);
         } else {

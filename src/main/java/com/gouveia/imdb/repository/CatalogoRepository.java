@@ -1,7 +1,6 @@
 package com.gouveia.imdb.repository;
 
 import com.gouveia.imdb.model.CatalogoItem;
-import com.gouveia.imdb.model.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
