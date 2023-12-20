@@ -21,7 +21,6 @@ public class UsuarioService {
     @Autowired
     ModelMapper modelMapper;
 
-    @Cacheable("usuarios")
     public List<UsuarioDTO> recuperarTodos() {
         var usuarios = usuarioRepository.findAllByAtivo(true);
         var usuariosDTO = new ArrayList<UsuarioDTO>();
