@@ -31,7 +31,7 @@ public class SecurityConfig {
                         .requestMatchers("/usuarios").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/usuarios/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/usuarios/**").hasRole("ADMIN")
-                        .requestMatchers("/catalogo").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/catalogo").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/catalogo/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"/catalogo/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,"/catalogo/avaliar").permitAll()

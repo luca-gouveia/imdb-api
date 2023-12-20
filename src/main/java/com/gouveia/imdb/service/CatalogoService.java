@@ -5,6 +5,8 @@ import com.gouveia.imdb.dto.BuscaDTO;
 import com.gouveia.imdb.dto.CatalogoItemDTO;
 import com.gouveia.imdb.dto.CatalogoItemResponseDTO;
 import com.gouveia.imdb.enums.Genero;
+import com.gouveia.imdb.exceptions.ConflictErrorException;
+import com.gouveia.imdb.exceptions.NotFoundErrorException;
 import com.gouveia.imdb.model.Avaliacao;
 import com.gouveia.imdb.model.CatalogoItem;
 import com.gouveia.imdb.model.Usuario;
@@ -25,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -146,22 +149,28 @@ public class CatalogoService {
         var notasValidas = List.of(1, 2, 3, 4);
         var nota = avaliacaoDTO.nota();
 
-        var usuarioLogado = (Usuario) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
+        Usuario usuarioLogado = null;
+        Optional<Usuario> usuario = Optional.empty();
 
-        Optional<Usuario> usuario = usuarioRepository.findById(usuarioLogado.getId());
-        Optional<CatalogoItem> catalogoItem = catalogoRepository.findById(avaliacaoDTO.idItemCatalogo());
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
+            usuarioLogado = (Usuario) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
 
-        if (!notasValidas.contains(nota)) {
-            throw new RuntimeException("Nota fora do padrão");
+            usuario = usuarioRepository.findById(usuarioLogado.getId());
         }
 
-        if (usuario.isEmpty()) {
-            throw new RuntimeException("Usuário não existe");
+        Optional<CatalogoItem> catalogoItem = catalogoRepository.findById(avaliacaoDTO.idItemCatalogo());
+
+        if (usuarioLogado == null) {
+            throw new NotFoundErrorException("Usuário encontrado");
         }
 
         if (catalogoItem.isEmpty()) {
-            throw new RuntimeException("Título não existe");
+            throw new NotFoundErrorException("Título não existe");
+        }
+
+        if (!notasValidas.contains(nota)) {
+            throw new ConflictErrorException("Nota fora do padrão");
         }
 
         var avaliacao = Avaliacao.builder()
@@ -174,11 +183,16 @@ public class CatalogoService {
     }
 
     public Page<CatalogoItemResponseDTO> buscar(BuscaDTO buscaDTO, Pageable pageable) {
-        var catalogoItemPage = catalogoRepository.buscar(buscaDTO.titulo(), buscaDTO.diretor(), buscaDTO.atores(), pageable);
+        var catalogoItemPage = catalogoRepository.buscar(
+                Objects.toString(buscaDTO.titulo(), ""),
+                Objects.toString(buscaDTO.diretor(), ""),
+                Objects.toString(buscaDTO.atores(), ""),
+                pageable);
+
         var itensListaDTO = new ArrayList<CatalogoItemResponseDTO>();
         var catalogoItens = catalogoItemPage.getContent();
 
-        if (!buscaDTO.genero().isEmpty()) {
+        if (buscaDTO.genero() != null && !buscaDTO.genero().isEmpty()) {
             var genero = Genero.recuperarEnumPorDescricao(buscaDTO.genero());
 
             catalogoItens = catalogoItens

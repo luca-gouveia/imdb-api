@@ -5,9 +5,13 @@ import com.gouveia.imdb.dto.AuthDTO;
 import com.gouveia.imdb.dto.AuthResponseDTO;
 import com.gouveia.imdb.dto.RegistroUsuarioDTO;
 import com.gouveia.imdb.dto.UsuarioDTO;
-import com.gouveia.imdb.exceptions.NotFoundErrorException;
+import com.gouveia.imdb.exceptions.LoginErrorException;
 import com.gouveia.imdb.model.Usuario;
 import com.gouveia.imdb.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "imdb-api")
 public class AuthController {
 
     @Autowired
@@ -32,8 +37,14 @@ public class AuthController {
     @Autowired
     JWTConfig jwtConfig;
 
+    @Operation(summary = "Realiza o login para a recuperação de um token", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login realizado com sucesso"),
+            @ApiResponse(responseCode = "401", description = "Login não foi realizado ou não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar o processamento do token"),
+    })
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody @Validated AuthDTO authDTO){
+    public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthDTO authDTO){
         var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(authDTO.email(), authDTO.senha());
 
         try {
@@ -42,10 +53,15 @@ public class AuthController {
 
             return ResponseEntity.ok(new AuthResponseDTO(token));
         }catch (InternalAuthenticationServiceException e) {
-            throw new NotFoundErrorException("Erro ao logar! Verifique as credencias");
+            throw new LoginErrorException("Erro ao logar! Verifique as credencias");
         }
     }
 
+    @Operation(summary = "Realiza o registro do Usuário na api", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Registro de novo usuário realizado com sucesso"),
+            @ApiResponse(responseCode = "409", description = "Registro falhou por usuário já existir"),
+    })
     @PostMapping("/registrar")
     public ResponseEntity<UsuarioDTO> registrar(@RequestBody @Validated RegistroUsuarioDTO registroUsuarioDTO) {
         return authService.registrarUsuario(registroUsuarioDTO);

@@ -2,7 +2,7 @@ package com.gouveia.imdb.service;
 
 import com.gouveia.imdb.dto.RegistroUsuarioDTO;
 import com.gouveia.imdb.dto.UsuarioDTO;
-import com.gouveia.imdb.exceptions.NotFoundErrorException;
+import com.gouveia.imdb.exceptions.ConflictErrorException;
 import com.gouveia.imdb.model.Usuario;
 import com.gouveia.imdb.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class AuthService implements UserDetailsService {
         var hasUsuario = this.usuarioRepository.findByEmail(usuario.email()) != null;
 
         if(hasUsuario) {
-            throw new NotFoundErrorException("Usuário já cadastrado!");
+            throw new ConflictErrorException("Usuário já cadastrado!");
         }
 
         String senhaCriptografada = new BCryptPasswordEncoder().encode(usuario.senha());

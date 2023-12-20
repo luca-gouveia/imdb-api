@@ -3,6 +3,7 @@ package com.gouveia.imdb.controller;
 import com.gouveia.imdb.dto.UsuarioDTO;
 import com.gouveia.imdb.dto.UsuarioRequestDTO;
 import com.gouveia.imdb.service.UsuarioService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/usuarios")
+@Tag(name = "imdb-api")
 public class UsuarioController {
     @Autowired
     UsuarioService usuarioService;
