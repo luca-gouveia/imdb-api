@@ -6,6 +6,7 @@ import com.gouveia.imdb.model.Usuario;
 import com.gouveia.imdb.repository.UsuarioRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class UsuarioService {
     @Autowired
     ModelMapper modelMapper;
 
+    @Cacheable("usuarios")
     public List<UsuarioDTO> recuperarTodos() {
         var usuarios = usuarioRepository.findAllByAtivo(true);
         var usuariosDTO = new ArrayList<UsuarioDTO>();
