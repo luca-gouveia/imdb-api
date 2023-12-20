@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class OpenApiConfig {
     @Bean
     public OpenAPI customOpenAPI() {
-        return new OpenAPI().addServersItem(new Server().url("https://imdb-api-production-0e39.up.railway.app"))
+        return new OpenAPI().addServersItem(new Server().url("http://imdb-api-production-0e39.up.railway.app"))
                 .addServersItem(new Server().url("http://localhost:8080"));
     }
 }
