@@ -3,6 +3,9 @@ package com.gouveia.imdb.controller;
 import com.gouveia.imdb.dto.UsuarioDTO;
 import com.gouveia.imdb.dto.UsuarioRequestDTO;
 import com.gouveia.imdb.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -28,20 +31,33 @@ public class UsuarioController {
     @Autowired
     UsuarioService usuarioService;
 
+    @Operation(summary = "Recupera todos os usuários cadastrados ativos", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuários recuperados com sucesso"),
+            @ApiResponse(responseCode = "403", description = "Erro de acesso - Não autorizado"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar o processamento da recuperação dos usuários"),
+    })
     @GetMapping
     public ResponseEntity<List<UsuarioDTO>> recuperarTodos() {
         var usuarios = usuarioService.recuperarTodos();
 
-        for(UsuarioDTO usuario : usuarios) {
+        for (UsuarioDTO usuario : usuarios) {
             usuario.add(linkTo(methodOn(UsuarioController.class).recuperarPorId(usuario.getId())).withSelfRel());
         }
 
         return new ResponseEntity<List<UsuarioDTO>>(usuarios, HttpStatus.OK);
     }
 
+    @Operation(summary = "Recupera usuário cadastrado por ID", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuário recuperado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "403", description = "Erro de acesso - Não autorizado"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar o processamento da recuperação do usuário"),
+    })
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDTO> recuperarPorId(@PathVariable("id") Long id) {
-        var usuario =  usuarioService.recuperarPorId(id);
+        var usuario = usuarioService.recuperarPorId(id);
 
         if (usuario != null) {
             usuario.add(linkTo(methodOn(UsuarioController.class).recuperarTodos()).withRel(IanaLinkRelations.COLLECTION));
@@ -52,9 +68,15 @@ public class UsuarioController {
         }
     }
 
+    @Operation(summary = "DESATIVA usuário cadastrado por ID - Deleção lógica", method = "DELETE")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuário desativado com sucesso"),
+            @ApiResponse(responseCode = "403", description = "Erro de acesso - Não autorizado"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar o processamento da desativação do usuário"),
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<String> desativar(@PathVariable("id") Long id) {
-        var isDesativado =  usuarioService.desativarUsuario(id);
+        var isDesativado = usuarioService.desativarUsuario(id);
 
         if (isDesativado) {
             return ResponseEntity.ok().body("Usuário removido!");
@@ -63,9 +85,15 @@ public class UsuarioController {
         }
     }
 
+    @Operation(summary = "Atualiza usuário cadastrado por ID - Deleção lógica", method = "PUT")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso"),
+            @ApiResponse(responseCode = "403", description = "Erro de acesso - Não autorizado"),
+            @ApiResponse(responseCode = "500", description = "Erro ao realizar o processamento da atualização do usuário"),
+    })
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioDTO> editar(@PathVariable("id") Long id, @RequestBody UsuarioRequestDTO usuarioRequestDTO) {
-        var usuario =  usuarioService.editar(id, usuarioRequestDTO);
+        var usuario = usuarioService.editar(id, usuarioRequestDTO);
 
         if (usuario != null) {
             return ResponseEntity.ok().body(usuario);
