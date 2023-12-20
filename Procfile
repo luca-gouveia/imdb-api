@@ -1,1 +1,1 @@
-web: java -jar -Dserver.port=$PORT build/libs/imdb-0.0.1-SNAPSHOT.jar
+web: java -jar -Dserver.port=$PORT -jar target/imdb-0.0.1-SNAPSHOT.jar
