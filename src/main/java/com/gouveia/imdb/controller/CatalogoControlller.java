@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,6 +45,7 @@ public class CatalogoControlller {
     @Operation(summary = "Cria título no catálogo", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Título cadastrado com sucesso"),
+            @ApiResponse(responseCode = "403", description = "Erro de acesso - Não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro ao realizar o processamento da criação do título"),
     })
     @PostMapping
@@ -59,6 +59,7 @@ public class CatalogoControlller {
             @ApiResponse(responseCode = "200", description = "Título avaliado com sucesso"),
             @ApiResponse(responseCode = "409", description = "Nota da avaliação do título fora do padrão (1 - 2 - 3 - 4)"),
             @ApiResponse(responseCode = "404", description = "Item do catálogo a ser avaliado não existe"),
+            @ApiResponse(responseCode = "403", description = "Erro de acesso - Não autenticado"),
             @ApiResponse(responseCode = "500", description = "Erro ao realizar o processamento da avaliação do título - Usuário já avaliou"),
     })
     @PostMapping("/avaliar")
@@ -139,6 +140,7 @@ public class CatalogoControlller {
     @Operation(summary = "Realiza a deleção física do título do catálogo", method = "DELETE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Deletado com sucesso"),
+            @ApiResponse(responseCode = "403", description = "Erro de acesso - Não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro ao realizar a remoção do título"),
     })
     @DeleteMapping("/{id}")
