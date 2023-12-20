@@ -18,7 +18,7 @@ spring:
             non-contextual-creation: true
     show-sql: true
     hibernate:
-      ddlAuto: update
+      ddlAuto: create
 
 api:
   security:
