@@ -21,6 +21,6 @@ spring:
       ddlAuto: update
 
 api:
-    security:
-      token:
-        secret: ${JWT_SECRET}
+  security:
+    token:
+      secret: ${JWT_SECRET}
