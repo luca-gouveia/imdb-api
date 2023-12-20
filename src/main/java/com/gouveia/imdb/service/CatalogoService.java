@@ -23,9 +23,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -81,7 +78,8 @@ public class CatalogoService {
 
     private List<CatalogoItemResponseDTO> converterEmCatalogoItemResponseDTO(List<CatalogoItem> itens, ArrayList<CatalogoItemResponseDTO> itensListaDTO) {
         for (CatalogoItem catalogoItem : itens) {
-            itensListaDTO.add(modelMapper.map(catalogoItem, CatalogoItemResponseDTO.class));
+            var catalogoItemDto = getCatalogoItemResponseDTO(catalogoItem);
+            itensListaDTO.add(catalogoItemDto);
         }
 
         return itensListaDTO;
