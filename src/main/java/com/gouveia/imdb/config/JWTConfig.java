@@ -23,6 +23,7 @@ public class JWTConfig {
             return JWT.create()
                     .withIssuer("auth0")
                     .withSubject(usuario.getEmail())
+                    .withClaim("role", String.valueOf(usuario.getRole()))
                     .withExpiresAt(gerarTempoExpiracaoToken())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
