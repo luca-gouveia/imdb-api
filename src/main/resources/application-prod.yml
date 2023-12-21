@@ -17,7 +17,8 @@ spring:
           lob:
             non-contextual-creation: true
     show-sql: true
-
+    hibernate:
+      ddlAuto: update
 api:
   security:
     token:
