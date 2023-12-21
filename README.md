@@ -4,11 +4,11 @@ A api está publicada e disponível documentada no endereço abaixo:
 
 https://imdb-api-production-0e39.up.railway.app/swagger-ui/index.html#
 
-O front end da aplicação que usa dos recursos disponibilizados pela api encontrasse no seguite repositório:
+O front end da aplicação que usa dos recursos disponibilizados pela api encontra-se no seguite repositório:
 
 https://github.com/luca-gouveia/imdb-app
 
-O frontend também foi disponibilizado para acesso e encontrasse no seguinte endereço:
+O frontend também foi disponibilizado para acesso e encontra-se no seguinte endereço:
 
 https://imdb-app-production.up.railway.app/
 
