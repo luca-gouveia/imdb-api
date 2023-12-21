@@ -12,6 +12,9 @@ O frontend também foi disponibilizado para acesso e encontra-se no seguinte end
 
 https://imdb-app-production.up.railway.app/
 
+# Para rodar localmente
+Em ambos os repositórios, acessar a branch *develop* para rodar os projetos. As branchs master e main tem modificações necessárias para o deploy das aplicações
+
 # Para execuções como administrador, usar o usuário abaixo.
 
 Vale lembrar que o usuário admin só é criado via banco. Todo e qualquer usuário criado pelo sistema, trata-se de um usuário de *ROLE - USER* apenas.
