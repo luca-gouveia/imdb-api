@@ -33,7 +33,7 @@ public class Avaliacao {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "filme_id")
     private CatalogoItem catalogoItem;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 }
