@@ -12,6 +12,8 @@ O frontend também foi disponibilizado para acesso e encontra-se no seguinte end
 
 https://imdb-app-production.up.railway.app/
 
+Obs: O ambiente onde a aplicação está hospedada é bem limitado. A máquina é bem lenta, mas dá para ter uma ideia do projeto
+
 # Para rodar localmente
 Em ambos os repositórios, acessar a branch *develop* para rodar os projetos. As branchs master e main tem modificações necessárias para o deploy das aplicações
 
