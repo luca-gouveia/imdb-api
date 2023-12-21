@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @Tag(name = "imdb-api")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     @Autowired

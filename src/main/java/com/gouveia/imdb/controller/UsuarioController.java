@@ -28,7 +28,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("/usuarios")
 @Tag(name = "imdb-api")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class UsuarioController {
     @Autowired
     UsuarioService usuarioService;
