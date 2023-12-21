@@ -49,7 +49,6 @@ public class CatalogoService {
             for (String generoString : catalogoItemDTO.genero()) {
                 generos.add(Genero.recuperarEnumPorDescricao(generoString));
             }
-
         }
 
         var catalogoItem = CatalogoItem.builder()
@@ -59,6 +58,7 @@ public class CatalogoService {
                 .atores(catalogoItemDTO.atores())
                 .imdbID(catalogoItemDTO.imdbID())
                 .genero(generos)
+                .linkImagem(catalogoItemDTO.linkImagem())
                 .ativo(true)
                 .build();
 

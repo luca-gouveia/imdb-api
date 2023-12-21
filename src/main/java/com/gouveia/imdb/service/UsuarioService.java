@@ -6,11 +6,12 @@ import com.gouveia.imdb.model.Usuario;
 import com.gouveia.imdb.repository.UsuarioRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -35,7 +36,16 @@ public class UsuarioService {
     public Boolean desativarUsuario(Long id) {
         Optional<Usuario> usuario = usuarioRepository.findByIdAndAtivo(id, true);
 
-        if (usuario.isPresent()) {
+        var usuarioLogado = SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
+            usuarioLogado = null;
+        }
+
+        Usuario logado = (Usuario) usuarioLogado;
+
+        if (usuario.isPresent() && !Objects.equals(logado.getId(), usuario.get().getId())) {
             usuarioRepository.delete(usuario.get());
             return true;
         }
